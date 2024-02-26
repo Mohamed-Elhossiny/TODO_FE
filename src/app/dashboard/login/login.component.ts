@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 import { LoginService } from 'src/app/service/login.service';
 
 @Component({
@@ -12,7 +15,10 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private service: LoginService
+    private service: LoginService,
+    private toaster: ToastrService,
+    private spinner: NgxSpinnerService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -42,10 +48,18 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    console.log(this.loginForm.value);
+    this.spinner.show();
     this.service.login(this.loginForm.value).subscribe(
-      (res) => {},
-      (error) => {}
+      (res: any) => {
+        localStorage.setItem('token', res.token);
+        this.toaster.success('Login Success', 'Success');
+        this.router.navigate(['/tasks']);
+        this.spinner.hide();
+      },
+      (error) => {
+        this.toaster.error(error.error.message);
+        this.spinner.hide();
+      }
     );
   }
 }

@@ -6,7 +6,7 @@ import { LayoutComponent } from './layout/layout.component';
 const routes: Routes = [
   {
     path: '',
-    component: LayoutComponent,
+    component: LoginComponent,
     children: [
       {
         path: 'login',

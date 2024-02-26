@@ -3,3 +3,8 @@ export interface Login {
   password: string;
   role: string;
 }
+
+export interface AuthModel {
+  token: string;
+  userId: string;
+}
