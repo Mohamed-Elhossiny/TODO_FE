@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import * as moment from 'moment';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { TasksService } from 'src/app/service/tasks.service';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
 @Component({
   selector: 'app-create-task',
@@ -25,27 +30,43 @@ export class CreateTaskComponent implements OnInit {
       userId: '65de200e31a3ff2cee174b8e',
     },
   ];
+  oldFromdata: any;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder,
     private service: TasksService,
     private spinner: NgxSpinnerService,
     private toaster: ToastrService,
+    private matDialog: MatDialogRef<any>,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    console.log(this.data);
     this.createFrom();
   }
 
   createFrom() {
     this.taskForm = this.formBuilder.group({
-      title: ['', [Validators.required, Validators.minLength(5)]],
-      userId: ['', Validators.required],
-      image: [null, Validators.required],
-      description: ['', Validators.required],
-      deadline: ['', Validators.required],
+      title: [
+        this.data?.title || '',
+        [Validators.required, Validators.minLength(5)],
+      ],
+      userId: [this.data?.userId._id || '', Validators.required],
+      image: [this.data?.image || null, Validators.required],
+      description: [this.data?.description || '', Validators.required],
+      deadline: [
+        this.data
+          ? new Date(
+              (this.data?.deadline).split('-').reverse().join('-')
+            ).toISOString()
+          : '',
+        Validators.required,
+      ],
     });
+
+    this.oldFromdata = this.taskForm.value;
   }
 
   setImage(e: any) {
@@ -60,13 +81,12 @@ export class CreateTaskComponent implements OnInit {
   createTask() {
     this.spinner.show();
     let model = this.prepareForm();
-    console.log(this.taskForm.value);
     this.service.createTask(model).subscribe(
-      (res) => {
+      (res: any) => {
         console.log(res);
         this.spinner.hide();
-        this.toaster.success('Task Added Success', 'Success');
-        this.dialog.closeAll();
+        this.toaster.success(res.massage, 'Success');
+        this.matDialog.close(true);
       },
       (error) => {
         console.log(error);
@@ -88,5 +108,45 @@ export class CreateTaskComponent implements OnInit {
     });
 
     return formData;
+  }
+
+  closeDialog() {
+    let isChanged = false;
+    Object.keys(this.oldFromdata).forEach((item) => {
+      if (this.oldFromdata[item] != this.taskForm.value[item]) {
+        isChanged = true;
+      }
+    });
+
+    if (isChanged) {
+      const dialogRef = this.dialog.open(ConfirmationComponent, {
+        width: '500px',
+        disableClose: true,
+      });
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+        }
+      });
+    } else {
+      this.matDialog.close();
+    }
+  }
+
+  updateTask() {
+    this.spinner.show();
+    let model = this.prepareForm();
+    this.service.updateTask(model, this.data._id).subscribe(
+      (res: any) => {
+        console.log(res);
+        this.spinner.hide();
+        this.toaster.success(res.massage, 'Success');
+        this.matDialog.close(true);
+      },
+      (error) => {
+        console.log(error);
+        this.toaster.error(error.error.massage);
+        this.spinner.hide();
+      }
+    );
   }
 }

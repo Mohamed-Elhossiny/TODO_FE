@@ -29,8 +29,16 @@
       <span>{{imageName}}</span>
       <input type="file" hidden class="form-control" id="taskImage" (change)="setImage($event)">
     </div>
-    <div class="d-flex justify-content-end mb-5">
-      <button class="btn btn-success" (click)="createTask()" [disabled]="taskForm.invalid">Create</button>
+    <div class="button d-flex justify-content-end">
+      <div class="mb-5 me-5">
+        <button *ngIf="!data" class="btn btn-success" (click)="createTask()"
+          [disabled]="taskForm.invalid">Create</button>
+        <button *ngIf="data" class="btn btn-warning" (click)="updateTask()"
+          [disabled]="taskForm.invalid">Update</button>
+      </div>
+      <div class="mb-5">
+        <button class="btn btn-danger" (click)="closeDialog()">Close</button>
+      </div>
     </div>
   </form>
 </div>
