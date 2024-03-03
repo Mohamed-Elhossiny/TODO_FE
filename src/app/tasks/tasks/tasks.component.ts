@@ -52,17 +52,11 @@ export class TasksComponent implements OnInit {
     this.getAllTask();
   }
   getAllTask() {
-    this.service.getAllTasks(this.filteration).subscribe(
-      (res: any) => {
-        this.dataSource = this.mappingData(res.tasks);
-        this.dataSource.paginator = this.paginator;
-        this.total = res.totalItems;
-      },
-      (error) => {
-        console.log(error);
-        this.toaster.error(error.error.massage);
-      }
-    );
+    this.service.getAllTasks(this.filteration).subscribe((res: any) => {
+      this.dataSource = this.mappingData(res.tasks);
+      this.dataSource.paginator = this.paginator;
+      this.total = res.totalItems;
+    });
   }
 
   createTask() {
@@ -89,15 +83,10 @@ export class TasksComponent implements OnInit {
 
   deleteTask(id: any) {
     console.log(id);
-    this.service.deleteTask(id).subscribe(
-      (res: any) => {
-        this.toaster.success(res.massage);
-        this.getAllTask();
-      },
-      (error) => {
-        this.toaster.error(error.error.massage);
-      }
-    );
+    this.service.deleteTask(id).subscribe((res: any) => {
+      this.toaster.success(res.massage);
+      this.getAllTask();
+    });
   }
 
   updateTask(element: any) {

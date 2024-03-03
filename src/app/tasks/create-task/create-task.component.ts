@@ -41,7 +41,6 @@ export class CreateTaskComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.data);
     this.createFrom();
   }
 
@@ -78,17 +77,11 @@ export class CreateTaskComponent implements OnInit {
 
   createTask() {
     let model = this.prepareForm();
-    this.service.createTask(model).subscribe(
-      (res: any) => {
-        console.log(res);
-        this.toaster.success(res.massage, 'Success');
-        this.matDialog.close(true);
-      },
-      (error) => {
-        console.log(error);
-        this.toaster.error(error.error.massage);
-      }
-    );
+    this.service.createTask(model).subscribe((res: any) => {
+      console.log(res);
+      this.toaster.success(res.massage, 'Success');
+      this.matDialog.close(true);
+    });
   }
 
   prepareForm() {
@@ -129,16 +122,10 @@ export class CreateTaskComponent implements OnInit {
 
   updateTask() {
     let model = this.prepareForm();
-    this.service.updateTask(model, this.data._id).subscribe(
-      (res: any) => {
-        console.log(res);
-        this.toaster.success(res.massage, 'Success');
-        this.matDialog.close(true);
-      },
-      (error) => {
-        console.log(error);
-        this.toaster.error(error.error.massage);
-      }
-    );
+    this.service.updateTask(model, this.data._id).subscribe((res: any) => {
+      console.log(res);
+      this.toaster.success(res.massage, 'Success');
+      this.matDialog.close(true);
+    });
   }
 }

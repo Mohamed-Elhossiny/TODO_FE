@@ -46,15 +46,10 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.service.login(this.loginForm.value).subscribe(
-      (res: any) => {
-        localStorage.setItem('token', res.token);
-        this.toaster.success('Login Success', 'Success');
-        this.router.navigate(['/tasks']);
-      },
-      (error) => {
-        this.toaster.error(error.error.message);
-      }
-    );
+    this.service.login(this.loginForm.value).subscribe((res: any) => {
+      localStorage.setItem('token', res.token);
+      this.toaster.success('Login Success', 'Success');
+      this.router.navigate(['/tasks']);
+    });
   }
 }
