@@ -1,9 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { TasksService } from 'src/app/service/tasks.service';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CreateTaskComponent } from '../create-task/create-task.component';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-tasks',
@@ -20,8 +20,13 @@ export class TasksComponent implements OnInit {
     'status',
     'actions',
   ];
+  page: any;
+  total: any;
   dataSource: any = [];
-  filteration: any = {};
+  filteration: any = {
+    page: 1,
+    limit: 5,
+  };
   setTimOutID: any;
   users: any = [
     {
@@ -40,24 +45,22 @@ export class TasksComponent implements OnInit {
     private service: TasksService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private spinner: NgxSpinnerService,
     private toaster: ToastrService
   ) {}
+  @ViewChild(MatPaginator) paginator = {} as MatPaginator;
   ngOnInit(): void {
     this.getAllTask();
   }
-
   getAllTask() {
-    this.spinner.show();
     this.service.getAllTasks(this.filteration).subscribe(
       (res: any) => {
         this.dataSource = this.mappingData(res.tasks);
-        this.spinner.hide();
+        this.dataSource.paginator = this.paginator;
+        this.total = res.totalItems;
       },
       (error) => {
         console.log(error);
         this.toaster.error(error.error.massage);
-        this.spinner.hide();
       }
     );
   }
@@ -86,16 +89,13 @@ export class TasksComponent implements OnInit {
 
   deleteTask(id: any) {
     console.log(id);
-    this.spinner.show();
     this.service.deleteTask(id).subscribe(
       (res: any) => {
         this.toaster.success(res.massage);
-        this.spinner.hide();
         this.getAllTask();
       },
       (error) => {
         this.toaster.error(error.error.massage);
-        this.spinner.hide();
       }
     );
   }
@@ -137,5 +137,12 @@ export class TasksComponent implements OnInit {
     if (type === 'toDate') {
       this.getAllTask();
     }
+  }
+
+  changePage(event: any) {
+    this.page = event.pageIndex + 1;
+    this.filteration['page'] = this.page;
+    this.filteration['limit'] = event.pageSize;
+    this.getAllTask();
   }
 }

@@ -6,7 +6,6 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import * as moment from 'moment';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { TasksService } from 'src/app/service/tasks.service';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
@@ -36,7 +35,6 @@ export class CreateTaskComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder,
     private service: TasksService,
-    private spinner: NgxSpinnerService,
     private toaster: ToastrService,
     private matDialog: MatDialogRef<any>,
     private dialog: MatDialog
@@ -79,19 +77,16 @@ export class CreateTaskComponent implements OnInit {
   }
 
   createTask() {
-    this.spinner.show();
     let model = this.prepareForm();
     this.service.createTask(model).subscribe(
       (res: any) => {
         console.log(res);
-        this.spinner.hide();
         this.toaster.success(res.massage, 'Success');
         this.matDialog.close(true);
       },
       (error) => {
         console.log(error);
         this.toaster.error(error.error.massage);
-        this.spinner.hide();
       }
     );
   }
@@ -133,19 +128,16 @@ export class CreateTaskComponent implements OnInit {
   }
 
   updateTask() {
-    this.spinner.show();
     let model = this.prepareForm();
     this.service.updateTask(model, this.data._id).subscribe(
       (res: any) => {
         console.log(res);
-        this.spinner.hide();
         this.toaster.success(res.massage, 'Success');
         this.matDialog.close(true);
       },
       (error) => {
         console.log(error);
         this.toaster.error(error.error.massage);
-        this.spinner.hide();
       }
     );
   }

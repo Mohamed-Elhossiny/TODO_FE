@@ -4,7 +4,7 @@
   </div>
 </div>
 
-<div class="container example-container mat-elevation-z8">
+<div class="container example-container mat-elevation-z8 mb-5">
 
   <div class="example-header d-flex mt-3 row">
     <div class="ms-3 mt-3 col-sm-2 col-md-4">
@@ -27,7 +27,7 @@
     </div>
     <div class="ms-3 mt-3 col-sm-2 col-md-4">
       <label for="" class="text-black-50">Date</label>
-      
+
       <input #fromDate class="form-control mb-3" placeholder="Date Range" type="date"
         (change)="selectDate($event,'fromDate')">
       <input class="form-control" placeholder="Date Range" type="date" (change)="selectDate($event,'toDate')">
@@ -77,6 +77,16 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <!-- <mat-row *matRowDef="let row; columns: displayedColumns | paginate: { id: 'foo',
+    itemsPerPage: pageSize,
+    currentPage: p,
+    totalItems: total }"" ></mat-row> -->
+    <!-- <mat-row
+      *matRowDef="let row; columns: displayedColumns | paginate: {id: 'taskTable', itemsPerPage: 10, currentPage: page, totalItems: total }"></mat-row> -->
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
   </mat-table>
+  <div class="d-flex justify-content-end mt-3">
+    <!-- <pagination-controls (pageChange)="changePage($event)" id="taskTable"></pagination-controls> -->
+    <mat-paginator [pageSizeOptions]="[5,10,20]" [length]="total" (page)="changePage($event)"></mat-paginator>
+  </div>
 </div>

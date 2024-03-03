@@ -7,6 +7,7 @@ import { CreateTaskComponent } from './create-task/create-task.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [TasksComponent, CreateTaskComponent, ConfirmationComponent],
@@ -15,7 +16,7 @@ import { ConfirmationComponent } from './confirmation/confirmation.component';
     TasksRoutingModule,
     ReactiveFormsModule,
     MatTableModule,
-    
+    MatPaginatorModule,
   ],
 })
 export class TasksModule {}
