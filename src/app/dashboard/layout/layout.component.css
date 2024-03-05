@@ -14,3 +14,8 @@
   color: rgb(169, 169, 3);
 }
 
+.language:hover {
+  cursor: pointer;
+  color: rgb(169, 169, 3);
+}
+

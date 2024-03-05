@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Login } from '../Models/login';
+import { CreateAccount, Login } from '../Models/login';
 import { environment } from 'src/environments/environment.development';
 
 @Injectable({
@@ -13,6 +13,13 @@ export class LoginService {
     return this.httpClient.post(
       environment.baseAPi.replace('tasks/', 'auth/') + 'login',
       Model
+    );
+  }
+
+  createAccount(model: CreateAccount) {
+    return this.httpClient.post(
+      environment.baseAPi.replace('tasks/', 'auth/') + 'createAccount',
+      model
     );
   }
 }

@@ -8,3 +8,10 @@ export interface AuthModel {
   token: string;
   userId: string;
 }
+
+export interface CreateAccount {
+  email: string;
+  password: string;
+  role: string;
+  username: string;
+}
