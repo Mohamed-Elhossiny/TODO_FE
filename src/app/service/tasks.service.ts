@@ -8,26 +8,22 @@ import { environment } from 'src/environments/environment.development';
 export class TasksService {
   constructor(private httpClient: HttpClient) {}
 
-  getAllTasks(filteration: any) {
-    let params = new HttpParams();
-    Object.entries(filteration).forEach(([key, value]: any) => {
-      if (value) {
-        params = params.append(key, value);
-      }
-    });
-
-    return this.httpClient.get(environment.baseAPi + 'all-tasks', { params });
+  getAllTasks() {
+    return this.httpClient.get(environment.baseAPi);
   }
 
   createTask(model: any) {
-    return this.httpClient.post(environment.baseAPi + 'add-task', model);
+    return this.httpClient.post(environment.baseAPi, model);
   }
 
   deleteTask(id: any) {
-    return this.httpClient.delete(environment.baseAPi + 'delete-task/' + id);
+    return this.httpClient.delete(environment.baseAPi + id);
   }
 
   updateTask(model: any, id: any) {
-    return this.httpClient.put(environment.baseAPi + 'edit-task/' + id, model);
+    return this.httpClient.put(environment.baseAPi + id, model);
+  }
+  getTaskById(id: number) {
+    return this.httpClient.get(environment.baseAPi + id);
   }
 }

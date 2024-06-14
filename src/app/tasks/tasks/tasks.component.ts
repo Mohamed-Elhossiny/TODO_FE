@@ -4,6 +4,10 @@ import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { ToastrService } from 'ngx-toastr';
 import { MatPaginator } from '@angular/material/paginator';
+import { Task } from '../Models/Task';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
+import { TaskDetailsComponent } from '../task-details/task-details.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tasks',
@@ -14,9 +18,7 @@ export class TasksComponent implements OnInit {
   displayedColumns: any = [
     'position',
     'title',
-    'user',
     'description',
-    'deadline',
     'status',
     'actions',
   ];
@@ -28,16 +30,6 @@ export class TasksComponent implements OnInit {
     limit: 5,
   };
   setTimOutID: any;
-  users: any = [
-    {
-      name: 'Mohamed',
-      userId: '65de1e3931a3ff2cee174b82',
-    },
-    {
-      name: 'Ali',
-      userId: '65de200e31a3ff2cee174b8e',
-    },
-  ];
 
   status: any = [{ name: 'In-Progress' }, { name: 'Done' }, { name: 'Active' }];
 
@@ -45,17 +37,17 @@ export class TasksComponent implements OnInit {
     private service: TasksService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private toaster: ToastrService
+    private toaster: ToastrService,
+    private router: Router
   ) {}
   @ViewChild(MatPaginator) paginator = {} as MatPaginator;
   ngOnInit(): void {
     this.getAllTask();
   }
   getAllTask() {
-    this.service.getAllTasks(this.filteration).subscribe((res: any) => {
-      this.dataSource = this.mappingData(res.tasks);
-      this.dataSource.paginator = this.paginator;
-      this.total = res.totalItems;
+    this.service.getAllTasks().subscribe((res: any) => {
+      debugger;
+      this.dataSource = this.mappingData(res.responseValue);
     });
   }
 
@@ -71,11 +63,13 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  mappingData(data: any[]) {
-    let newData = data.map((item) => {
+  mappingData(data: any[]): Task[] {
+    let newData = data.map((item: any) => {
       return {
-        ...item,
-        user: item.userId.username,
+        Id: item.id,
+        Title: item.title,
+        Description: item.description,
+        IsComplete: item.isComplete,
       };
     });
     return newData;
@@ -83,9 +77,19 @@ export class TasksComponent implements OnInit {
 
   deleteTask(id: any) {
     console.log(id);
-    this.service.deleteTask(id).subscribe((res: any) => {
-      this.toaster.success(res.massage);
-      this.getAllTask();
+    const dialogRef = this.dialog.open(ConfirmationComponent, {
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      debugger;
+      if (result) {
+        this.service.deleteTask(id).subscribe((res: any) => {
+          if (res.responseID == 1) {
+            this.toaster.success(res.responseMessage);
+            this.getAllTask();
+          }
+        });
+      }
     });
   }
 
@@ -102,36 +106,8 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  seacrh(event: any) {
-    this.filteration['keyword'] = event.value;
-    clearTimeout(this.setTimOutID);
-    this.setTimOutID = setTimeout(() => {
-      this.getAllTask();
-    }, 1500);
-  }
-
-  selectUser(event: any) {
-    this.filteration['userId'] = event.target.value;
-    this.getAllTask();
-  }
-
-  selectstatus(event: any) {
-    this.filteration['status'] = event.target.value;
-    this.getAllTask();
-  }
-
-  selectDate(event: any, type: string) {
-    console.log(event.target.value, type);
-    this.filteration[type] = event.target.value.split('-').reverse().join('-');
-    if (type === 'toDate') {
-      this.getAllTask();
-    }
-  }
-
-  changePage(event: any) {
-    this.page = event.pageIndex + 1;
-    this.filteration['page'] = this.page;
-    this.filteration['limit'] = event.pageSize;
-    this.getAllTask();
+  openDetails(element: any) {
+    debugger;
+    this.router.navigate(['/tasks', element.Id]);
   }
 }

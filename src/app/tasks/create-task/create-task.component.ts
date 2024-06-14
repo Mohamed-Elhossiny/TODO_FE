@@ -19,16 +19,7 @@ export class CreateTaskComponent implements OnInit {
   taskForm!: any;
   imageName!: any;
   selectedImage: File | null = null;
-  users: any = [
-    {
-      name: 'Mohamed',
-      userId: '65de1e3931a3ff2cee174b82',
-    },
-    {
-      name: 'Ali',
-      userId: '65de200e31a3ff2cee174b8e',
-    },
-  ];
+
   oldFromdata: any;
 
   constructor(
@@ -47,52 +38,32 @@ export class CreateTaskComponent implements OnInit {
   createFrom() {
     this.taskForm = this.formBuilder.group({
       title: [
-        this.data?.title || '',
+        this.data?.Title || '',
         [Validators.required, Validators.minLength(5)],
       ],
-      userId: [this.data?.userId._id || '', Validators.required],
-      image: [this.data?.image || null, Validators.required],
-      description: [this.data?.description || '', Validators.required],
-      deadline: [
-        this.data
-          ? new Date(
-              (this.data?.deadline).split('-').reverse().join('-')
-            ).toISOString()
-          : '',
-        Validators.required,
-      ],
+      description: [this.data?.Description || '', Validators.required],
+      isComplete: [this.data?.IsComplete || false, Validators.required],
     });
-
+    debugger;
     this.oldFromdata = this.taskForm.value;
   }
 
-  setImage(e: any) {
-    const file = e.target.files[0];
-
-    this.taskForm.get('image').setValue(file);
-
-    this.selectedImage = file;
-    this.imageName = file ? file.name : '';
-  }
-
   createTask() {
-    let model = this.prepareForm();
-    this.service.createTask(model).subscribe((res: any) => {
-      console.log(res);
-      this.toaster.success(res.massage, 'Success');
-      this.matDialog.close(true);
-    });
+    //let model = this.prepareForm();
+    if (this.taskForm.valid) {
+      const newTask = this.taskForm.value;
+      this.service.createTask(newTask).subscribe((res: any) => {
+        console.log(res);
+        this.toaster.success(res.massage, 'Success');
+        this.matDialog.close(true);
+      });
+    }
   }
 
   prepareForm() {
-    let newDate = moment(this.taskForm.value['deadline']).format('DD-MM-YYYY');
     let formData = new FormData();
     Object.entries(this.taskForm.value).forEach(([key, value]: any) => {
-      if (key == 'deadline') {
-        formData.append(key, newDate);
-      } else {
-        formData.append(key, value);
-      }
+      formData.append(key, value);
     });
 
     return formData;
@@ -100,12 +71,7 @@ export class CreateTaskComponent implements OnInit {
 
   closeDialog() {
     let isChanged = false;
-    Object.keys(this.oldFromdata).forEach((item) => {
-      if (this.oldFromdata[item] != this.taskForm.value[item]) {
-        isChanged = true;
-      }
-    });
-
+    
     if (isChanged) {
       const dialogRef = this.dialog.open(ConfirmationComponent, {
         width: '500px',
@@ -121,11 +87,18 @@ export class CreateTaskComponent implements OnInit {
   }
 
   updateTask() {
-    let model = this.prepareForm();
-    this.service.updateTask(model, this.data._id).subscribe((res: any) => {
-      console.log(res);
-      this.toaster.success(res.massage, 'Success');
-      this.matDialog.close(true);
-    });
+    if (this.taskForm.valid) {
+      const updatedTask = this.taskForm.value;
+      debugger;
+      this.service
+        .updateTask(updatedTask, this.data.Id)
+        .subscribe((res: any) => {
+          console.log(res);
+          if (res.responseID == 1) {
+            this.toaster.success(res.massage, 'Success');
+            this.matDialog.close(true);
+          }
+        });
+    }
   }
 }

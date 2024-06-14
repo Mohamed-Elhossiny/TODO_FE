@@ -1,92 +1,49 @@
 <div class="container">
   <div class="mt-5 mb-5 d-flex">
-    <a class="btn btn-primary ms-auto" (click)="createTask()">Create Task</a>
+    <a class="btn ms-auto main-color" (click)="createTask()">Create Task</a>
   </div>
 </div>
 
 <div class="container example-container mat-elevation-z8 mb-5">
 
-  <div class="example-header d-flex mt-3 row">
-    <div class="ms-3 mt-3 col-sm-2 col-md-4">
-      <label for="Title" class="text-black-50">Search</label>
-      <input class="form-control" placeholder="Title" (keyup)="seacrh($event.target)">
-    </div>
-    <div class="ms-3 mt-3 col-sm-6 col-md-4">
-      <label class="text-black-50">By User</label>
-      <select class="form-select" aria-label="Default select example" (change)="selectUser($event)">
-        <option value="" disabled selected>Select User</option>
-        <option *ngFor="let user of users" [value]="user.userId">{{user.name}}</option>
-      </select>
-    </div>
-    <div class="ms-3 mt-3 col-sm-2 col-md-4">
-      <label for="" class="text-black-50">Status</label>
-      <select class="form-select" aria-label="Default select example" (change)="selectstatus($event)">
-        <option value="" disabled selected>Status</option>
-        <option *ngFor="let stat of status" [value]="stat.name">{{stat.name}}</option>
-      </select>
-    </div>
-    <div class="ms-3 mt-3 col-sm-2 col-md-4">
-      <label for="" class="text-black-50">Date</label>
-
-      <input #fromDate class="form-control mb-3" placeholder="Date Range" type="date"
-        (change)="selectDate($event,'fromDate')">
-      <input class="form-control" placeholder="Date Range" type="date" (change)="selectDate($event,'toDate')">
-    </div>
-  </div>
+  <h2 class="mb-3 mt-3 ms-3 text-center headerTable">Tasks List</h2>
   <mat-table #table [dataSource]="dataSource">
 
     <ng-container matColumnDef="position">
       <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-      <mat-cell *matCellDef="let element;let index = index">
-        {{index + 1}}
+      <mat-cell class="clickable-cell" *matCellDef="let element; let index = index" (click)="openDetails(element)">
+        {{ index + 1 }}
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="title">
       <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
-    </ng-container>
-
-
-    <ng-container matColumnDef="user">
-      <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.user}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{ element.Title }} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="description">
       <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="deadline">
-      <mat-header-cell *matHeaderCellDef> Deadline </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.deadline}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{ element.Description }} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.status}} </mat-cell>
+      <mat-cell *matCellDef="let element"> {{ element.IsComplete ? 'Completed' : 'InProgress' }} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="actions">
       <mat-header-cell *matHeaderCellDef> Action </mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <button class="btn btn-warning me-2" (click)="updateTask(element)">Update</button>
-        <button class="btn btn-danger" (click)="deleteTask(element._id)">Delete</button>
+        <button class="btn btn-warning me-3" (click)="updateTask(element)">Update</button>
+        <button class="btn btn-danger" (click)="deleteTask(element.Id)">Delete</button>
       </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <!-- <mat-row *matRowDef="let row; columns: displayedColumns | paginate: { id: 'foo',
-    itemsPerPage: pageSize,
-    currentPage: p,
-    totalItems: total }"" ></mat-row> -->
-    <!-- <mat-row
-      *matRowDef="let row; columns: displayedColumns | paginate: {id: 'taskTable', itemsPerPage: 10, currentPage: page, totalItems: total }"></mat-row> -->
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
   </mat-table>
-  <div class="d-flex justify-content-end mt-3">
-    <!-- <pagination-controls (pageChange)="changePage($event)" id="taskTable"></pagination-controls> -->
+  <!-- <div class="d-flex justify-content-end mt-3">
     <mat-paginator [pageSizeOptions]="[5,10,20]" [length]="total" (page)="changePage($event)"></mat-paginator>
-  </div>
+  </div> -->
 </div>

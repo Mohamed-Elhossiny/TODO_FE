@@ -2,7 +2,8 @@
   <form [formGroup]="taskForm">
     <div class="mb-3">
       <label for="taskTilte" class="form-label">Title</label>
-      <input type="text" class="form-control" id="taskTilte" formControlName="title">
+      <input type="text" class="form-control" id="taskTilte" formControlName="title"
+        [ngClass]="{'border-danger': taskForm.controls['title'].invalid && (taskForm.controls['title'].dirty || taskForm.controls['title'].touched)}">
       <ng-container>
         <div class="text-danger" *ngIf="taskForm.get('title').hasError('minlength')">Min length for title is 5
           chars
@@ -10,27 +11,16 @@
       </ng-container>
     </div>
     <div class="mb-3">
-      <label for="taskUser" class="form-label"> User</label>
-      <select class="form-select" aria-label="Default select example" formControlName="userId">
-        <option value="" disabled selected>Select User</option>
-        <option *ngFor="let user of users" [value]="user.userId">{{user.name}}</option>
-      </select>
-    </div>
-    <div class="mb-3">
       <label for="taskDescription" class="form-label"> Description</label>
-      <input type="text" class="form-control" id="taskDescription" formControlName="description">
+      <input type="text" class="form-control" id="taskDescription" formControlName="description"
+        [ngClass]="{'border-danger': taskForm.controls['description'].invalid && (taskForm.controls['description'].dirty || taskForm.controls['description'].touched)}">
     </div>
-    <div class="mb-3">
-      <label for="taskDescription" class="form-label"> DeadLine</label>
-      <input type="date" class="form-control" id="taskDescription" formControlName="deadline">
-    </div>
-    <div class="mb-3">
-      <label class="btn btn-primary" for="taskImage">Image</label>
-      <span>{{imageName}}</span>
-      <input type="file" hidden class="form-control" id="taskImage" (change)="setImage($event)">
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="isComplete" formControlName="isComplete">
+      <label class="form-check-label" for="isComplete">Is Complete</label>
     </div>
     <div class="button d-flex justify-content-end">
-      <div class="mb-5 me-5">
+      <div class="mb-5 me-3">
         <button *ngIf="!data" class="btn btn-success" (click)="createTask()"
           [disabled]="taskForm.invalid">Create</button>
         <button *ngIf="data" class="btn btn-warning" (click)="updateTask()"

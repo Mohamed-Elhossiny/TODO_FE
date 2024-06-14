@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'Revision';
+  title = 'TODO';
   language: any;
   constructor(private translate: TranslateService) {
     if ('language' in localStorage) {

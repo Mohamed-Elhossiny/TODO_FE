@@ -22,7 +22,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     DashboardModule,
     HttpClientModule,
     ToastrModule.forRoot(),
-    NgxSpinnerModule.forRoot({ type: 'square-jelly-box' }),
+    NgxSpinnerModule.forRoot({ type: 'line-scale-pulse-out' }),
     CoreModule,
     MatDialogModule,
     HttpClientModule,

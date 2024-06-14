@@ -1,0 +1,17 @@
+<div class="container mt-5">
+  <h2>Task Details</h2>
+  <div *ngIf="task">
+    <div class="mb-3">
+      <label for="taskTitle" class="form-label">Title</label>
+      <input type="text" class="form-control" id="taskTitle" [value]="task.title" readonly>
+    </div>
+    <div class="mb-3">
+      <label for="taskDescription" class="form-label">Description</label>
+      <input type="text" class="form-control" id="taskDescription" [value]="task.description" readonly>
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="isComplete" [checked]="task.isComplete" disabled>
+      <label class="form-check-label" for="isComplete">Is Complete</label>
+    </div>
+  </div>
+</div>

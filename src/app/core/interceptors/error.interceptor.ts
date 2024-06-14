@@ -5,26 +5,30 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
+  HttpResponse,
 } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
   constructor(private toaster: ToastrService, private router: Router) {}
 
   intercept(
-    request: HttpRequest<unknown>,
+    request: HttpRequest<any>,
     next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
+  ): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => {
-        this.toaster.error(error.error.message);
-        if (error.error.message == 'jwt expired') {
-          this.router.navigate(['/login']);
+      tap((event) => {
+        if (event instanceof HttpResponse) {
+          const responseBody = event.body;
+          if (responseBody && responseBody.responseID === 0) {
+            this.toaster.error(responseBody.responseMessage);
+          } else {
+          }
         }
-        throw error;
       })
     );
   }

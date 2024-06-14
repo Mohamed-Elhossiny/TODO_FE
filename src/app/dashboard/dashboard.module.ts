@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { LayoutComponent } from './layout/layout.component';
-import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { RegisterComponent } from './register/register.component';
 
 @NgModule({
-  declarations: [LayoutComponent, LoginComponent, RegisterComponent],
+  declarations: [LayoutComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  baseAPi: 'https://crud-107i.onrender.com/tasks/',
+  baseAPi: 'http://localhost:5081/api/Tasks/',
 };

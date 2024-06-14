@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -12,9 +12,11 @@ export class ConfirmationComponent {
     private matDialog: MatDialogRef<ConfirmationComponent>
   ) {}
   confirm() {
-    this.dialog.closeAll();
+
+    //this.dialog.closeAll();
+    this.matDialog.close(true);
   }
   close() {
-    this.matDialog.close();
+    this.matDialog.close(false);
   }
 }
